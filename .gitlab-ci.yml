@@ -16,16 +16,18 @@ variables:
   BUILD_IMAGE: build-image:latest
   ECORP_CORE_NETWORK_BRIDGE: ecorp_core
 
-tag: core
-
 create-job:
   stage: create
   image: $BUILD_IMAGE
   when: manual
-  script: ./project-server create_${PROJECT_TYPE}
+  tags:
+    - core
+  script: ./project-server create
 
 destroy-job:
   stage: destroy
   image: $BUILD_IMAGE
   when: manual
-  script: ./project-server destroy_${PROJECT_TYPE}
+  tags:
+    - core
+  script: ./project-server destroy
