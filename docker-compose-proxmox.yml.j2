@@ -1,0 +1,17 @@
+services:
+  {{ PROJECT_SERVER_NAME }}:
+    image: rtedpro/proxmox:9.0.11
+    hostname: "{{ PROJECT_SERVER_NAME }}.{{ DNS_CORE_ZONE_NAME }}"
+    privileged: true
+    restart: unless-stopped
+    labels:
+      dns_mode: "{{ PROJECT_DNS_MODE }}"
+      dns_names: "*.{{ PROJECT_SERVER_NAME }}"
+      network_route: "{{ PROJECT_NETWORK_ROUTE | default('') }}"
+    volumes:
+      - /storage/project-server/{{ PROJECT_SERVER_NAME }}:/storage
+
+networks:
+  default:
+    name: {{ ECORP_CORE_NETWORK_BRIDGE | default('ecorp_core') }}
+    external: true

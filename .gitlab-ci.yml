@@ -1,0 +1,30 @@
+stages:
+  - create
+  - destroy
+
+variables:
+  PROJECT_SERVER_NAME:
+    description: "Name of node in the system like 'k8s', this will appear in domain like k8s.ecorp.intra.net"
+  PROJECT_TYPE:
+    description: Type of new system: proxmox, systemd, docker, kubernetes
+  PROJECT_NETWORK_ROUTE:
+    description: Extra route controller should add to the core network, making project server internal machines accessible via routing. eg: 192.168.15.0/24
+  PROJECT_DNS_MODE:
+    description: DNS mode of the project: static (*.name resolved to node), delegated (dns forwarded for this server, for routed networks)
+    value: static
+
+  BUILD_IMAGE: build-image:latest
+  ECORP_CORE_NETWORK_BRIDGE: ecorp_core
+tag: core
+
+create-job:
+  stage: create
+  image: $BUILD_IMAGE
+  when: manual
+  script: ./project-server create_${PROJECT_TYPE}
+
+destroy-job:
+  stage: destroy
+  image: $BUILD_IMAGE
+  when: manual
+  script: ./project-server destroy_${PROJECT_TYPE}

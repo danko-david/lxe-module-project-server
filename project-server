@@ -1,0 +1,193 @@
+#!/bin/bash
+
+# Linuxengineerings lxe helper script
+# Used to wrap custom callable cli functions inside one script
+############################# RH helper functions ##############################
+
+HELPER_ROOT=$(dirname $(readlink -f $0))
+
+set -e
+
+# Uncomment if your script should run in the directory this script is located.
+cd $HELPER_ROOT
+
+_rh_try_ret_help()
+{
+	if [ ! -z $RH_RUNTIME_REQUEST_HELP ]
+	then
+		echo $1
+		exit 1;
+	fi
+}
+
+################################################################################
+
+req_var()
+{
+	if [ -z ${!1} ]
+	then
+		echo "$1 is not set"
+		exit 1
+	fi
+}
+
+check_pre()
+{
+	req_var PROJECT_SERVER_NAME
+	req_var PROJECT_TYPE
+	req_var PROJECT_DNS_MODE
+	#req_var PROJECT_NETWORK_ROUTE
+	req_var ECORP_CORE_NETWORK_BRIDGE
+}
+
+create()
+{
+	_rh_try_ret_help 'Invokes create_${PROJECT_TYPE} creator'
+	check_pre
+	create_${PROJECT_TYPE}
+}
+
+provision()
+{
+	_rh_try_ret_help 'Invokes provision_${PROJECT_TYPE} provisioning'
+	check_pre
+	provision_${PROJECT_TYPE}
+}
+
+destroy()
+{
+	_rh_try_ret_help 'Invokes destroy_${PROJECT_TYPE} provisioning'
+	check_pre
+	set -e
+	CNT=project-server-${1}-1
+	docker stop $CNT
+	docker rm $CNT
+	rm -R /storage/project-server/${1}
+}
+
+## common functions
+launch_compose()
+{
+	jinja -X '.*' docker-compose-${1}.yml.j2 > docker-compose.yml
+	docker compose up -d --build
+}
+
+################################################################################
+
+# proxmox functions
+	create_proxmox()
+	{
+		_rh_try_ret_help 'Create Proxmox server'
+		check_pre
+		launch_compose proxmox
+		provision_proxmox
+	}
+
+	provision_proxmox()
+	{
+		_rh_try_ret_help 'Provision on existing Proxmox server'
+		check_pre
+	}
+
+# systemd functions
+	create_systemd()
+	{
+		_rh_try_ret_help 'Create ssh systemd target server'
+		check_pre
+		launch_compose systemd
+		provision_systemd
+	}
+
+	provision_systemd()
+	{
+		_rh_try_ret_help 'Provision on existing systemd server'
+		check_pre
+		#TODO
+}
+
+# docker functions
+	create_docker()
+	{
+		_rh_try_ret_help 'Create ssh systemd docker target server'
+		check_pre
+		launch_compose systemd
+		provision_docker
+	}
+
+	provision_docker()
+	{
+		_rh_try_ret_help 'Provision on existing docker server'
+		check_pre
+		ansible-playbook -i hosts.yml playbook-docker.yml
+	}
+
+# kubernetes
+	create_kubernetes()
+	{
+		_rh_try_ret_help 'Create ssh systemd kubernetes (kind) target server'
+		check_pre
+		launch_compose systemd
+		provision_kubernetes
+	}
+
+	provision_kubernetes()
+	{
+		_rh_try_ret_help 'Provision on existing kubernetes server'
+		check_pre
+		ansible-playbook -i hosts.yml playbook-kubernetes.yml
+	}
+
+############################ RH built-in functions #############################
+
+help()
+{
+	_rh_try_ret_help "Prints help with the list of all annotated functions"
+
+cat <<EOF
+Linuxengineering helper script.
+This is a wrapper script that lets you collect functions for CLI use.
+Specify one function from the following:
+EOF
+	RH_RUNTIME_REQUEST_HELP=true
+
+	for f in ${RH_FUNCTIONS[@]}
+	do
+		# if the command has help
+		if type $f | grep -qzP '{\s+_rh_try_ret_help '
+		then
+			echo -e "\t$f - "$($f)
+		fi
+	done
+}
+
+############################## Application area ################################
+
+# Collection available commands
+RH_FUNCTIONS=()
+
+for func in `typeset -F | grep -Po '(?<=-f).*$' | sort`
+do
+	RH_FUNCTIONS+=($func);
+done
+
+# print help if nothing specified
+
+if [ $# '<' '1' ]
+then
+	help
+	exit 1
+fi
+
+# run command
+for f in ${RH_FUNCTIONS[@]}
+do
+	if [ "$1" "=" "$f" ]
+	then
+		$f "${@:2}"
+		exit $?
+	fi
+done
+
+echo "Helper function $1 not found, so now printing help..."
+help
+exit 1

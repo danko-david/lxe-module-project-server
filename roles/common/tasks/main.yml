@@ -1,0 +1,5 @@
+# Deploy settings file
+- name: Deploy project server variables
+  template:
+    src: env
+    dest: /.env

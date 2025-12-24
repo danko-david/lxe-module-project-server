@@ -1,0 +1,6 @@
+- name: Provision docker project server
+  hosts: all
+  roles:
+    - common
+    - docker_common
+    - kind

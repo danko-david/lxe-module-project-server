@@ -1,0 +1,5 @@
+PROJECT_TYPE="{{ lookup('env', 'PROJECT_TYPE') }}"
+DNS_CORE_ZONE_NAME="{{ lookup('env', 'DNS_CORE_ZONE_NAME') }}"
+PROJECT_SERVER_NAME="{{ lookup('env', 'PROJECT_SERVER_NAME') }}"
+PROJECT_DNS_MODE="{{ lookup('env', 'PROJECT_DNS_MODE') }}"
+PROJECT_NETWORK_ROUTE="{{ lookup('env', 'PROJECT_NETWORK_ROUTE') | default('') }}"

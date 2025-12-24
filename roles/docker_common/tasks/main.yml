@@ -1,0 +1,28 @@
+- name: Configure containerd
+  template:
+    src: containerd.toml
+    dest: /etc/containerd/config.toml
+  register: containerd
+  
+- name: Configure docker
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  register: docker_config
+
+# Enable containerd
+- name: Enable continerd and start immediately
+  service:
+    name: containerd
+    daemon_reload: yes
+    state: "{{ 'restarted' if containerd.changed else 'started' }}"
+    enabled: yes
+
+# Enable docker
+- name: Enable docker and start immediately
+  service:
+    name: docker
+    daemon_reload: yes
+    state: "{{ 'restarted' if docker_config.changed else 'started' }}"
+    enabled: yes
+

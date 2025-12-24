@@ -1,0 +1,13 @@
+{
+	"log-level": "info"
+  	{% if lookup('env', 'PROJECT_NETWORK_ROUTE') != '' %}
+	,"default-address-pools": [
+		{
+			"base": "{{ lookup('env', 'PROJECT_NETWORK_ROUTE') }}",
+			"size": {{ docker_address_size }}
+		}
+	]
+	{% endif %}
+	
+	,"data-root": "/storage/docker"
+}

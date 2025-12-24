@@ -1,0 +1,14 @@
+- name: Install golang
+  apt:
+    name: golang
+    state: present
+
+- name: Install kind
+  shell: go install sigs.k8s.io/kind@latest
+
+- name: Initialize cluster
+  shell: |
+    if ! docker ps | grep -q kind-control-plane
+    then
+      $(go env GOPATH)/bin/kind create cluster
+    fi

@@ -1,0 +1,20 @@
+services:
+  {{ PROJECT_SERVER_NAME }}:
+    build:
+      context: ./docker/ssh-systemd-target
+    privileged: true
+    hostname: "{{ PROJECT_SERVER_NAME }}.{{ DNS_CORE_ZONE_NAME }}"
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+    labels:
+      dns_mode: "{{ PROJECT_DNS_MODE }}"
+      dns_names: "*.{{ PROJECT_SERVER_NAME }}"
+      network_route: "{{ PROJECT_NETWORK_ROUTE | default('') }}"
+    volumes:
+      - /storage/project-server/{{ PROJECT_SERVER_NAME }}:/storage
+
+networks:
+  default:
+    name: {{ ECORP_CORE_NETWORK_BRIDGE | default('ecorp_core') }}
+    external: true
