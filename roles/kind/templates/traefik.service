@@ -1,0 +1,15 @@
+[Unit]
+Description=Traefik
+After=network-online.target
+Wants=network-online.target systemd-networkd-wait-online.service
+
+[Service]
+Restart=on-abnormal
+User=root
+Group=root
+Environment="KUBECONFIG=/root/.kube/config"
+ExecStart=/usr/local/bin/traefik --configFile=/storage/ingress/traefik.yml
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

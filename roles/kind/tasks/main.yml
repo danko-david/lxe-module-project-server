@@ -12,3 +12,11 @@
     then
       $(go env GOPATH)/bin/kind create cluster
     fi
+
+- import_tasks: install_traefik.yml
+
+- import_tasks: install_k8s_services.yml
+
+- import_tasks: install_networking.yml
+
+- import_tasks: print_info.yml

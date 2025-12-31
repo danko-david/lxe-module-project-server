@@ -1,0 +1,28 @@
+- name: Install packages
+  apt:
+    name:
+      - jq
+      - cron
+    state: present
+
+
+- name: Install networking script
+  template:
+    src: networking.sh
+    dest: /storage/ingress/networking.sh
+    mode: 0755
+
+- name: Install cron entry
+  template:
+    src: networking.cron
+    dest: /etc/cron.d/networking
+
+- name: Invoke networking script
+  command: /storage/ingress/networking.sh
+
+- name: Enable and start cront
+  service:
+    name: cron
+    daemon_reload: yes
+    state: started
+    enabled: yes

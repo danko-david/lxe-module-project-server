@@ -1,1 +1,41 @@
-- name: Create directory
+- name: Create /storage/ingress directory
+  file:
+    path: /storage/ingress
+    state: directory
+    mode: '0755'
+
+- name: Check if traefik binary exists
+  stat:
+    path: /usr/local/bin/traefik
+  register: traefik_binary
+
+- name: Download and unpack Traefik
+  unarchive:
+    src: https://github.com/traefik/traefik/releases/download/v2.11.33/traefik_v2.11.33_linux_amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+    include:
+      - traefik
+    mode: '0755'
+  when: not traefik_binary.stat.exists
+
+- name: Configure traefik
+  template:
+    src: traefik.yml
+    dest: /storage/ingress/traefik.yml
+    mode: '0644'
+  register: traefik_config
+
+- name: Generate Traefik systemd service file
+  template:
+    src: traefik.service
+    dest: /etc/systemd/system/traefik.service
+    mode: '0644'
+  register: traefik_service
+
+- name: Restart traefik
+  service:
+    name: traefik
+    daemon_reload: yes
+    state: "{{ 'restarted' if traefik_service.changed or traefik_config.changed else 'started' }}"
+    enabled: yes

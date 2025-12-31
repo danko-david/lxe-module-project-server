@@ -1,0 +1,6 @@
+# k8s api key, address, image address
+
+#- name: Print info
+#  debug:
+#    msg:
+#      - "K8s key: {{ lookup('ansible.builtin.file', '/root/.kube/config') }}"
