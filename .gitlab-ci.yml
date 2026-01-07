@@ -44,7 +44,7 @@ custom-destroy:
 kubernetes-create:
   extends: custom-create
   variables:
-    PROJECT_SERVER_NAME: k8s
+    PROJECT_SERVER_NAME: kx
     PROJECT_TYPE: kubernetes
 
 kubernetes-provision:
