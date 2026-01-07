@@ -45,52 +45,52 @@ kubernetes-create:
   extends: custom-create
   variables:
     PROJECT_SERVER_NAME: k8s
-    PROJECT_DNS_MODE: kubernetes
+    PROJECT_TYPE: kubernetes
 
 kubernetes-provision:
   extends: custom-provision
   variables:
     PROJECT_SERVER_NAME: kx
-    PROJECT_DNS_MODE: kubernetes
+    PROJECT_TYPE: kubernetes
 
 kubernetes-destroy:
   extends: custom-destroy
   variables:
     PROJECT_SERVER_NAME: kx
-    PROJECT_DNS_MODE: kubernetes
+    PROJECT_TYPE: kubernetes
 
 docker-create:
   extends: custom-create
   variables:
     PROJECT_SERVER_NAME: dx
-    PROJECT_DNS_MODE: docker
+    PROJECT_TYPE: docker
 
 docker-provision:
   extends: custom-provision
   variables:
     PROJECT_SERVER_NAME: dx
-    PROJECT_DNS_MODE: docker
+    PROJECT_TYPE: docker
 
 docker-destroy:
   extends: custom-destroy
   variables:
     PROJECT_SERVER_NAME: dx
-    PROJECT_DNS_MODE: docker
+    PROJECT_TYPE: docker
 
 proxmox-create:
   extends: custom-create
   variables:
     PROJECT_SERVER_NAME: px
-    PROJECT_DNS_MODE: proxmox
+    PROJECT_TYPE: proxmox
 
 proxmox-provision:
   extends: custom-provision
   variables:
     PROJECT_SERVER_NAME: px
-    PROJECT_DNS_MODE: proxmox
+    PROJECT_TYPE: proxmox
 
 proxmox-destroy:
   extends: custom-destroy
   variables:
     PROJECT_SERVER_NAME: px
-    PROJECT_DNS_MODE: proxmox
+    PROJECT_TYPE: proxmox
