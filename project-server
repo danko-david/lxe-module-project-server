@@ -36,7 +36,7 @@ check_pre()
 	req_var PROJECT_SERVER_NAME
 	req_var PROJECT_TYPE
 	req_var PROJECT_DNS_MODE
-	#req_var PROJECT_NETWORK_ROUTE
+	req_var DNS_CORE_ZONE_NAME
 	req_var ECORP_CORE_NETWORK_BRIDGE
 }
 
