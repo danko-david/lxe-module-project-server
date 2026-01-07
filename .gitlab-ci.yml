@@ -1,5 +1,6 @@
 stages:
   - create
+  - provision
   - destroy
 
 variables:
@@ -16,7 +17,7 @@ variables:
   BUILD_IMAGE: build-image:latest
   ECORP_CORE_NETWORK_BRIDGE: ecorp_core
 
-create-job:
+custom-create:
   stage: create
   image: $BUILD_IMAGE
   when: manual
@@ -24,10 +25,72 @@ create-job:
     - core
   script: ./project-server create
 
-destroy-job:
+custom-provision:
+  stage: provision
+  image: $BUILD_IMAGE
+  when: manual
+  tags:
+    - core
+  script: ./project-server provision
+
+custom-destroy:
   stage: destroy
   image: $BUILD_IMAGE
   when: manual
   tags:
     - core
   script: ./project-server destroy
+
+kubernetes-create:
+  extends: custom-create
+  variables:
+    PROJECT_SERVER_NAME: k8s
+    PROJECT_DNS_MODE: kubernetes
+
+kubernetes-provision:
+  extends: custom-provision
+  variables:
+    PROJECT_SERVER_NAME: kx
+    PROJECT_DNS_MODE: kubernetes
+
+kubernetes-destroy:
+  extends: custom-destroy
+  variables:
+    PROJECT_SERVER_NAME: kx
+    PROJECT_DNS_MODE: kubernetes
+
+docker-create:
+  extends: custom-create
+  variables:
+    PROJECT_SERVER_NAME: dx
+    PROJECT_DNS_MODE: docker
+
+docker-provision:
+  extends: custom-provision
+  variables:
+    PROJECT_SERVER_NAME: dx
+    PROJECT_DNS_MODE: docker
+
+docker-destroy:
+  extends: custom-destroy
+  variables:
+    PROJECT_SERVER_NAME: dx
+    PROJECT_DNS_MODE: docker
+
+proxmox-create:
+  extends: custom-create
+  variables:
+    PROJECT_SERVER_NAME: px
+    PROJECT_DNS_MODE: proxmox
+
+proxmox-provision:
+  extends: custom-provision
+  variables:
+    PROJECT_SERVER_NAME: px
+    PROJECT_DNS_MODE: proxmox
+
+proxmox-destroy:
+  extends: custom-destroy
+  variables:
+    PROJECT_SERVER_NAME: px
+    PROJECT_DNS_MODE: proxmox
