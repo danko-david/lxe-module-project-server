@@ -75,6 +75,26 @@ launch_compose()
 before_provision()
 {
 	chmod o-w .
+	retry=60
+	REQ_HOST=${PROJECT_SERVER_NAME}.${DNS_CORE_ZONE_NAME}
+	while true
+	do
+		if getent hosts ${REQ_HOST}
+		then
+			break
+		fi
+
+		if [ $retry '<' 0 ]
+		then
+			echo "Host $REQ_HOST still not available after 1 minute. Giving up and exiting."
+			exit 1
+		fi
+		
+		echo "Waiting for $REQ_HOST to be available. Remaining retry(s): $retry"
+		retry=$(expr $retry - 1 || true)
+		
+		sleep 1
+	done
 }
 
 ################################################################################
