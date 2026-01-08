@@ -28,14 +28,17 @@ then
 	iptables -t filter -I FORWARD 1 -j ACCEPT
 fi
 
-RULES=$(iptables-save | grep -- "-A PREROUTING -p tcp")
+RULES=$(iptables-save | grep -- "-A PREROUTING -p tcp" || true)
 
 # if ip changed (or no record)
 if [ $(grep $KIND_IP <<< "$RULES" | wc -l ) != 2 ]
 then
 	while read -ra l
 	do
-		iptables -t nat $(sed 's/-A PREROUTING/-D PREROUTING/' <<< "${l[@]}")
+		if [ ! -z "$l" ]
+        then
+			iptables -t nat $(sed 's/-A PREROUTING/-D PREROUTING/' <<< "${l[@]}")
+		fi
 	done <<< "$RULES"
 
 	iptables -t nat -A PREROUTING -p tcp --dport 6443 -j DNAT --to "$KIND_IP":6443
