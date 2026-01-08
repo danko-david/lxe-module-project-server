@@ -59,10 +59,10 @@ destroy()
 	_rh_try_ret_help 'Invokes destroy_${PROJECT_TYPE} provisioning'
 	check_pre
 	set -e
-	CNT=project-server-${1}-1
+	CNT=project-server-${PROJECT_SERVER_NAME}-1
 	docker stop $CNT
 	docker rm $CNT
-	rm -R /storage/project-server/${1}
+	rm -R /storage/project-server/${PROJECT_SERVER_NAME}
 }
 
 ## common functions
