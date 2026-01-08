@@ -2,7 +2,7 @@
 
 set -e
 
-KIND_IP=$(docker inspect kind-control-plane | jq -r ".[0].NetworkSettings.Networks.kind.IPAddress")
+KIND_IP=$(docker inspect {{ HOST_DNS_NAME }}-control-plane | jq -r ".[0].NetworkSettings.Networks.kind.IPAddress")
 
 # route for k8s network for traefik
 

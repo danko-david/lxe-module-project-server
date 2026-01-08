@@ -18,9 +18,9 @@
 
 - name: Initialize cluster
   shell: |
-    if ! docker ps | grep -q kind-control-plane
+    if ! docker ps | grep -q {{ HOST_DNS_NAME }}-control-plane
     then
-      $(go env GOPATH)/bin/kind create cluster
+      $(go env GOPATH)/bin/kind create cluster --name {{ HOST_DNS_NAME }}
     fi
 
 - import_tasks: install_traefik.yml
