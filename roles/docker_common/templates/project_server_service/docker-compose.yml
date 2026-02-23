@@ -1,0 +1,20 @@
+services:
+  project-server:
+    container_name: project-server
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      PROJECT_SERVER_DNS_CORE_ZONE_NAME: {{ HOST_DNS_NAME }}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+{% if PROJECT_DNS_MODE == 'delegated' or (SERVICE_DISCOVERY_PORT | default('')) != '' %}
+    ports:
+{% if PROJECT_DNS_MODE == 'delegated' %}
+      - 53:53/udp
+{% endif %}
+{% if (SERVICE_DISCOVERY_PORT | default('')) != '' %}
+      - {{ SERVICE_DISCOVERY_PORT }}:80
+{% endif %}
+
+{% endif %}
