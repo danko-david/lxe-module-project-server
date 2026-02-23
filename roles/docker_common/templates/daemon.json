@@ -4,7 +4,7 @@
 	,"default-address-pools": [
 		{
 			"base": "{{ lookup('env', 'PROJECT_NETWORK_ROUTE') }}",
-			"size": {{ docker_address_size }}
+			"size": {{ docker_address_size | default('26') }}
 		}
 	]
 	{% endif %}
