@@ -1,0 +1,19 @@
+- name: Create temp build dir
+  file:
+    path: /tmp/project_server
+    state: directory
+    mode: '0755'
+
+- name: Create project server build files
+  template:
+    src: "project_server_service/{{ item }}"
+    dest: "/tmp/project_server/{{ item }}"
+    mode: 0755
+  loop:
+    - docker-compose.yml
+    - Dockerfile
+    - project_server
+    - index.cgi
+
+- name: Deploy project server
+  shell: cd /tmp/project_server && docker compose up -d --build

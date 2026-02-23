@@ -11,7 +11,7 @@
   register: docker_config
 
 # Enable containerd
-- name: Enable continerd and start immediately
+- name: Enable containerd and start immediately
   service:
     name: containerd
     daemon_reload: yes
@@ -25,4 +25,11 @@
     daemon_reload: yes
     state: "{{ 'restarted' if docker_config.changed else 'started' }}"
     enabled: yes
+
+- name: Register project runner
+  include_tasks: register_project_runner.yml
+
+- name: Launch project server service
+  include_tasks: project_server_service.yml
+  when: PROJECT_DNS_MODE == 'delegated' or (SERVICE_DISCOVERY_PORT | default('')) != ''
 

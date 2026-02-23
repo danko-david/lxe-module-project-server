@@ -1,0 +1,29 @@
+
+- name: Check and register gitlab runner
+  shell: |
+    mkdir -p /storage/data/gitlab-runner/conf
+    docker network create base_net || true
+    if ! docker ps -a | grep -Pq '\s+gitlab-runner$'
+    then
+      docker run -d \
+        --name gitlab-runner \
+        --restart unless-stopped \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /storage/data/gitlab-runner/conf:/etc/gitlab-runner \
+        --net base_net \
+        gitlab/gitlab-runner:latest
+    fi
+
+    if ! docker exec gitlab-runner gitlab-runner list 2>&1 | grep -q '{{ PROJECT_SERVER_NAME }}'
+    then
+      docker exec gitlab-runner gitlab-runner register \
+      --non-interactive \
+      --url "http://gitlab.{{ DNS_CORE_ZONE_NAME }}" \
+      --registration-token "{{ GITLAB_RUNNER_TOKEN }}" \
+      --executor "docker" \
+      --description "{{ PROJECT_SERVER_NAME }} runner" \
+      --docker-image "alpine:latest" \
+      --run-untagged="true" \
+      --locked="false" \
+      --access-level="not_protected"
+    fi

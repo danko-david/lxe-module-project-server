@@ -3,4 +3,3 @@
   roles:
     - common
     - docker_common
-    - docker_standalone

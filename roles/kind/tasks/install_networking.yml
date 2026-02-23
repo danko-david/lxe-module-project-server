@@ -5,7 +5,6 @@
       - cron
     state: present
 
-
 - name: Install networking script
   template:
     src: networking.sh

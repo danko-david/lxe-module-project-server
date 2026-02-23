@@ -10,12 +10,18 @@ variables:
     description: "Type of new system: proxmox, systemd, docker, kubernetes"
   PROJECT_NETWORK_ROUTE:
     description: "Extra route controller should add to the core network, making project server internal machines accessible via routing. eg: 192.168.15.0/24"
+  PROJECT_NETWORK_SIZE:
+    description: "only if PROJECT_NETWORK_ROUTE specified. Specifiy the docker subnet size, eg.: /26 (make at least two times smaller than specified in route)"
+    value: "26"
   PROJECT_DNS_MODE:
     description: "DNS mode of the project: static (*.name resolved to node), delegated (dns forwarded for this server, for routed networks)"
     value: static
+  GITLAB_RUNNER_TOKEN:
+    description: "If set, register a gitlab runner (in docker based) project server"
+  SERVICE_DISCOVERY_PORT:
+    description: "If specified, a service listing application is installed (on docker based) containers on the given port (eg 900)"
 
   BUILD_IMAGE: build-image:latest
-  ECORP_CORE_NETWORK_BRIDGE: ecorp_core
 
 custom-create:
   stage: create

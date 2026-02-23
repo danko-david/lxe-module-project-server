@@ -1,0 +1,19 @@
+- name: ensure root .ssh directory
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Add extra keys
+  ansible.builtin.lineinfile:
+    path: /root/.ssh/authorized_keys
+    line: "{{ item }}"
+    state: present
+    create: yes
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ lookup('ansible.builtin.env', 'ECORP_SSH_EXTRA_AUTH') | default('', true) | split('\n') | map('trim') | list }}"
+  when: lookup('ansible.builtin.env', 'ECORP_SSH_EXTRA_AUTH') | length > 0

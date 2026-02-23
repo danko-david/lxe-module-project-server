@@ -11,6 +11,7 @@ services:
       dns_mode: "{{ PROJECT_DNS_MODE }}"
       dns_names: "*.{{ PROJECT_SERVER_NAME }}"
       network_route: "{{ PROJECT_NETWORK_ROUTE | default('') }}"
+      service_discovery_port: "{{ SERVICE_DISCOVERY_PORT | default('') }}"
     volumes:
       - /storage/project-server/{{ PROJECT_SERVER_NAME }}:/storage
 

@@ -1,0 +1,123 @@
+#!/bin/bash
+
+entrypoint()
+{
+	# Make docker available for www-data.
+	# Align group 'docker' uid to host uid and add www-data to docker group
+	groupdel docker || true
+	groupadd -o -g $(ls -lah /var/run/docker.sock | awk '{print $4}') docker || true
+	usermod -aG docker www-data
+
+	www_conf > /etc/apache2/sites-enabled/000-default.conf
+	a2enmod cgi
+    service apache2 start
+
+	mkdir -p /etc/coredns/zones
+	coredns_conf > /etc/coredns/Corefile
+	service_docker_dns_zones &
+	run_coredns &
+
+	tail -f /dev/null
+}
+
+www_conf()
+{
+cat << EOF
+	<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	DocumentRoot /www
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+	
+	<Directory /www>
+		Options Indexes FollowSymLinks ExecCGI
+		DirectoryIndex index.cgi index.html
+		AddHandler cgi-script .cgi
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
+EOF
+}
+
+
+coredns_conf()
+{
+cat << EOF
+. {
+    # Serve authoritative zone from a BIND file
+    auto . {
+        directory /etc/coredns/zones (.*) {1}
+    }
+
+    # Include external forwarding rules
+    forward . /etc/resolv.conf
+
+    # Basic logging and health checks
+    errors
+    ready
+    reload 3s
+}
+
+EOF
+}
+
+
+regenerate_dns_zone_docker()
+{
+	# create docker dir if not exists
+	mkdir -p /etc/coredns/zones
+
+	{
+		cat << EOF 
+\$ORIGIN ${PROJECT_SERVER_DNS_CORE_ZONE_NAME}.
+\$TTL 3600
+@   IN  SOA ns1.${PROJECT_SERVER_DNS_CORE_ZONE_NAME}. admin.${PROJECT_SERVER_DNS_CORE_ZONE_NAME}. (
+        $RANDOM ; serial
+        3600       ; refresh
+        1800       ; retry
+        1209600    ; expire
+        3600 )     ; minimum
+
+EOF
+{% raw %}
+
+	docker ps -q | xargs -n 1 docker inspect --format '{{ index .Config.Labels "com.docker.compose.service" }} {{ if .Config.Labels.dns_names }}{{ .Config.Labels.dns_names }}{{end}} {{range .NetworkSettings.Networks}}{{ range .DNSNames}} {{.}} {{end}}{{end}} {{range .NetworkSettings.Networks}} {{.IPAddress}}{{end}}' | grep -v '^ ' \
+	| while read -r -a REC
+	do
+		pn=${#REC[@]}
+		if [ $pn '>' 2 ]
+		then
+			lst=$(expr $pn - 1)
+			lste=$(expr $pn - 2)
+			for e in ${REC[@]:1:$lste}
+			do
+				echo ${e}.${REC[0]} IN A ${REC[$lst]}
+			done
+			echo 
+		fi
+	done
+
+	} > /etc/coredns/zones/${PROJECT_SERVER_DNS_CORE_ZONE_NAME}
+{% endraw %}
+}
+
+service_docker_dns_zones()
+{
+    regenerate_dns_zone_docker
+    docker events --filter 'event=start' --filter 'event=restart' --filter 'event=die' | while IFS= read -r line
+    do
+        # Start or die event
+        if grep -qP '^[^ ]+ container (start|die)' <<< $line
+        then
+            regenerate_dns_zone_docker
+        fi
+    done
+}
+
+run_coredns()
+{
+	/bin/coredns -conf /etc/coredns/Corefile
+}
+
+"$@"

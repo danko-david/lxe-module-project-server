@@ -3,3 +3,6 @@
   template:
     src: env
     dest: /.env
+
+- name: Add ssh keys
+  include_tasks: add_ssh_keys.yml

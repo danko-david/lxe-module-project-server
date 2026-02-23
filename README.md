@@ -13,5 +13,4 @@ networks.
 
 
 ## TODO
-- DNS: fixed (*.zone resolved to machine ip) or delegated to IP
-- implement add/remove routing in ecorp controller
+- implement add/remove routing on host machine

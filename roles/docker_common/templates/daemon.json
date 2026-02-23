@@ -1,10 +1,10 @@
 {
 	"log-level": "info"
-  	{% if lookup('env', 'PROJECT_NETWORK_ROUTE') != '' %}
+  	{% if 'PROJECT_NETWORK_ROUTE' != '' %}
 	,"default-address-pools": [
 		{
-			"base": "{{ lookup('env', 'PROJECT_NETWORK_ROUTE') }}",
-			"size": {{ docker_address_size | default('26') }}
+			"base": "{{ PROJECT_NETWORK_ROUTE }}",
+			"size": {{ PROJECT_NETWORK_SIZE }}
 		}
 	]
 	{% endif %}
