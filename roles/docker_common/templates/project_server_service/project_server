@@ -48,6 +48,7 @@ cat << EOF
     # Serve authoritative zone from a BIND file
     auto . {
         directory /etc/coredns/zones (.*) {1}
+        reload 3s 1s
     }
 
     # Include external forwarding rules
