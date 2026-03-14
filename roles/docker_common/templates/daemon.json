@@ -1,6 +1,6 @@
 {
 	"log-level": "info"
-  	{% if 'PROJECT_NETWORK_ROUTE' != '' %}
+  	{% if PROJECT_NETWORK_ROUTE != '' %}
 	,"default-address-pools": [
 		{
 			"base": "{{ PROJECT_NETWORK_ROUTE }}",
