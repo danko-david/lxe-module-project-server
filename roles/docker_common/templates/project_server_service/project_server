@@ -71,9 +71,9 @@ regenerate_dns_zone_docker()
 
 	{
 		cat << EOF 
-\$ORIGIN ${PROJECT_SERVER_DNS_CORE_ZONE_NAME}.
+\$ORIGIN ${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}.
 \$TTL 3600
-@   IN  SOA ns1.${PROJECT_SERVER_DNS_CORE_ZONE_NAME}. admin.${PROJECT_SERVER_DNS_CORE_ZONE_NAME}. (
+@   IN  SOA ns1.${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}. admin.${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}. (
         $RANDOM ; serial
         3600       ; refresh
         1800       ; retry
@@ -99,7 +99,7 @@ EOF
 		fi
 	done
 
-	} > /etc/coredns/zones/${PROJECT_SERVER_DNS_CORE_ZONE_NAME}
+	} > /etc/coredns/zones/${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}
 {% endraw %}
 }
 

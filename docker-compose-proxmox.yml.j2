@@ -1,7 +1,7 @@
 services:
   {{ PROJECT_SERVER_NAME }}:
     image: rtedpro/proxmox:9.0.11
-    hostname: "{{ PROJECT_SERVER_NAME }}.{{ DNS_CORE_ZONE_NAME }}"
+    hostname: "{{ PROJECT_SERVER_NAME }}.{{ ECORP_DNS_CORE_ZONE_NAME }}"
     privileged: true
     restart: unless-stopped
     labels:

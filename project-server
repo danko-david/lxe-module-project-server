@@ -36,7 +36,7 @@ check_pre()
 	req_var PROJECT_SERVER_NAME
 	req_var PROJECT_TYPE
 	req_var PROJECT_DNS_MODE
-	req_var DNS_CORE_ZONE_NAME
+	req_var ECORP_DNS_CORE_ZONE_NAME
 	req_var ECORP_CORE_NETWORK_BRIDGE
 }
 
@@ -76,7 +76,7 @@ before_provision()
 {
 	chmod o-w .
 	retry=60
-	REQ_HOST=${PROJECT_SERVER_NAME}.${DNS_CORE_ZONE_NAME}
+	REQ_HOST=${PROJECT_SERVER_NAME}.${ECORP_DNS_CORE_ZONE_NAME}
 	while true
 	do
 		if getent hosts ${REQ_HOST}

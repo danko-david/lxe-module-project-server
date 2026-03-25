@@ -18,7 +18,7 @@
     then
       docker exec gitlab-runner gitlab-runner register \
       --non-interactive \
-      --url "http://gitlab.{{ DNS_CORE_ZONE_NAME }}" \
+      --url "http://gitlab.{{ ECORP_DNS_CORE_ZONE_NAME }}" \
       --registration-token "{{ GITLAB_RUNNER_TOKEN }}" \
       --executor "docker" \
       --description "{{ PROJECT_SERVER_NAME }} runner" \

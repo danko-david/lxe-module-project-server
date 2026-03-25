@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PROJECT_SERVER_DNS_CORE_ZONE_NAME='{{ HOST_DNS_NAME }}'
+export PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME='{{ HOST_DNS_NAME }}'
 
 page()
 {
@@ -78,7 +78,7 @@ table tr:hover {
 </head>
 <body>
 	<header>
-		<a href="/">Service discovery on ${PROJECT_SERVER_DNS_CORE_ZONE_NAME}</a>
+		<a href="/">Service discovery on ${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}</a>
 	</header>
 	<content>
 		$(create_table)
@@ -110,7 +110,7 @@ echo '<h1>List of containers</h1><table>'
 	docker ps -q | xargs -n 1 docker inspect --format $'{{ index .Config.Labels "com.docker.compose.service" }}\t{{.Name}}\t{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\t{{range $k,$v := .NetworkSettings.Ports }}{{if $v }}{{ index (index $v 0 ) "HostPort" }}->{{$k}} {{end}}{{end}}' | grep -vP '^\s+' \
 		| while IFS=$'\t' read -a data
 		do
-			hn="${data[1]/\//}.${data[0]}.${PROJECT_SERVER_DNS_CORE_ZONE_NAME}"
+			hn="${data[1]/\//}.${data[0]}.${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}"
 			tr "${data[0]}" "${data[1]/\//}" "${hn}" "${data[2]}" "${data[3]}" "${data[4]}"
 		done
 echo '</table>'

@@ -5,7 +5,7 @@ services:
     build:
       context: .
     environment:
-      PROJECT_SERVER_DNS_CORE_ZONE_NAME: {{ HOST_DNS_NAME }}
+      PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME: {{ HOST_DNS_NAME }}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 {% if PROJECT_DNS_MODE == 'delegated' or (SERVICE_DISCOVERY_PORT | default('')) != '' %}

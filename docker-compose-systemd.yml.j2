@@ -3,7 +3,7 @@ services:
     build:
       context: ./docker/ssh-systemd-target
     privileged: true
-    hostname: "{{ PROJECT_SERVER_NAME }}.{{ DNS_CORE_ZONE_NAME }}"
+    hostname: "{{ PROJECT_SERVER_NAME }}.{{ ECORP_DNS_CORE_ZONE_NAME }}"
     restart: unless-stopped
     tmpfs:
       - /tmp
