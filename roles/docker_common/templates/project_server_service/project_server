@@ -99,7 +99,9 @@ EOF
 		fi
 	done
 
-	} > /etc/coredns/zones/${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}
+	} > /tmp/${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}
+	
+	mv /tmp/${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME} /etc/coredns/zones/${PROJECT_SERVER_ECORP_DNS_CORE_ZONE_NAME}
 {% endraw %}
 }
 
