@@ -27,3 +27,4 @@
       --locked="false" \
       --access-level="not_protected"
     fi
+  when: GITLAB_RUNNER_TOKEN != ""
