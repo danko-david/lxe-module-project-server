@@ -9,7 +9,7 @@ services:
       dns_names: "*.{{ PROJECT_SERVER_NAME }}"
       network_route: "{{ PROJECT_NETWORK_ROUTE | default('') }}"
     volumes:
-      - /storage/project-server/{{ PROJECT_SERVER_NAME }}:/storage
+      - ${ECORP_HOST_STORAGE_ROOT}/project-server/{{ PROJECT_SERVER_NAME }}:/storage
 
 networks:
   default:

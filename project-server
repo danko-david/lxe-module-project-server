@@ -38,6 +38,7 @@ check_pre()
 	req_var PROJECT_DNS_MODE
 	req_var ECORP_DNS_CORE_ZONE_NAME
 	req_var ECORP_CORE_NETWORK_BRIDGE
+	req_var ECORP_HOST_STORAGE_ROOT
 }
 
 create()
@@ -62,7 +63,7 @@ destroy()
 	CNT=project-server-${PROJECT_SERVER_NAME}-1
 	docker stop $CNT
 	docker rm $CNT
-	rm -R /storage/project-server/${PROJECT_SERVER_NAME}
+	rm -R ${ECORP_HOST_STORAGE_ROOT}/project-server/${PROJECT_SERVER_NAME}
 }
 
 ## common functions
