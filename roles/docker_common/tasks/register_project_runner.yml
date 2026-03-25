@@ -25,6 +25,9 @@
       --docker-image "alpine:latest" \
       --run-untagged="true" \
       --locked="false" \
-      --access-level="not_protected"
+      --access-level="not_protected" \
+      --docker-dns '{{ lookup('env', 'ECORP_DNS_SERVER_IP') }}' \
+      --docker-pull-policy 'if-not-present' \
+      --docker-volumes /var/run/docker.sock:/var/run/docker.sock
     fi
   when: GITLAB_RUNNER_TOKEN != ""

@@ -39,6 +39,7 @@ check_pre()
 	req_var ECORP_DNS_CORE_ZONE_NAME
 	req_var ECORP_CORE_NETWORK_BRIDGE
 	req_var ECORP_HOST_STORAGE_ROOT
+	req_var ECORP_DNS_SERVER_IP
 }
 
 create()
