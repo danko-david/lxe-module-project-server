@@ -21,7 +21,7 @@ variables:
   SERVICE_DISCOVERY_PORT:
     description: "If specified, a service listing application is installed (on docker based) containers on the given port (eg 900)"
 
-  BUILD_IMAGE: devops-build-image:latest
+  BUILD_IMAGE: lxeu/devops-build-image:latest
 
 custom-create:
   stage: create
